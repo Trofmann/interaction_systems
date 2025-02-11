@@ -1,6 +1,6 @@
 import sys
 
-from PyQt5 import QtGui
+from experiment import experiment_1
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel
 from PyQt5.QtCore import Qt
 
@@ -61,6 +61,9 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setup_ui()
+        self.experiment = experiment_1
+        self.experiment.start()
+        self.experiment.button_chosen.connect(self.highlight_key)
         self.show()
 
     def setup_ui(self):
@@ -69,6 +72,9 @@ class MainWindow(QMainWindow):
 
         self.keyboard = _generate_keyboard(self)
         self.numpad = _generate_numpad(self)
+
+    def highlight_key(self, key: int, is_numpad: bool):
+        ...
 
     def keyPressEvent(self, event) -> None:
         print()
