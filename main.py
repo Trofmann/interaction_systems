@@ -61,10 +61,9 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setup_ui()
-        self.experiment = experiment_1
-        self.experiment.start()
-        self.experiment.button_chosen.connect(self.highlight_key)
         self.show()
+        self.experiment = None
+        self.setup_experiment()
 
     def setup_ui(self):
         self.setWindowTitle('Lab1')
@@ -72,6 +71,14 @@ class MainWindow(QMainWindow):
 
         self.keyboard = _generate_keyboard(self)
         self.numpad = _generate_numpad(self)
+
+    def setup_experiment(self):
+        if self.experiment is None:
+            self.experiment = experiment_1
+        else:
+            self.experiment.button_chosen.disconnect()
+        self.experiment.start()
+        self.experiment.button_chosen.connect(self.highlight_key)
 
     def highlight_key(self, button: int, is_numpad: bool):
         print(button, is_numpad)
