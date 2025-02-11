@@ -73,11 +73,14 @@ class MainWindow(QMainWindow):
         self.keyboard = _generate_keyboard(self)
         self.numpad = _generate_numpad(self)
 
-    def highlight_key(self, key: int, is_numpad: bool):
-        ...
+    def highlight_key(self, button: int, is_numpad: bool):
+        print(button, is_numpad)
 
     def keyPressEvent(self, event) -> None:
-        print()
+        self.experiment.check_button(
+            button=event.key(),
+            is_numpad=bool(event.modifiers() & Qt.KeypadModifier)
+        )
 
 
 if __name__ == '__main__':

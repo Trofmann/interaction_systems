@@ -25,7 +25,8 @@ class Experiment(QThread):
         while True:
             if self.state == ExperimentState.WAIT_FOR_BUTTON_CHOICE:
                 self.chosen_button = Qt.Key_5
-                self.button_chosen.emit(self.chosen_button, False)
+                self.is_numpad = False
+                self.button_chosen.emit(self.chosen_button, self.is_numpad)
                 self.state = ExperimentState.WAIT_FOR_BUTTON_PRESS
 
     def check_button(self, button: int, is_numpad: bool) -> bool | None:
@@ -33,7 +34,7 @@ class Experiment(QThread):
             return None
         result = button == self.chosen_button and is_numpad == self.is_numpad
         if result:
-            self.state = ExperimentState.WAIT_FOR_BUTTON_PRESS
+            self.state = ExperimentState.WAIT_FOR_BUTTON_CHOICE
         else:
             self.state = ExperimentState.FAILED
         return result
