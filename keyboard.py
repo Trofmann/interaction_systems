@@ -25,7 +25,7 @@ class ButtonLabel(QLabel):
         self.setStyleSheet(f'background-color:red;{BUTTON_BORDER}')
 
     def unhighlight(self) -> None:
-        self.setStyleSheet(BUTTON_BORDER)
+        self.reset_style_sheet()
 
     def reset_style_sheet(self) -> None:
         self.setStyleSheet(BUTTON_BORDER)
