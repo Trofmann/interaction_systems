@@ -31,17 +31,22 @@ class MainWindow(QMainWindow):
         self.setWindowTitle('Lab1')
         self.setGeometry(500, 300, 800, 700)
 
+        # region Кнопка начала эксперимента
         self.start_experiment_button = QPushButton('Начать эксперимент', self)
         self.start_experiment_button.move(400, 10)
         self.start_experiment_button.setFixedWidth(200)
         self.start_experiment_button.setToolTip('Начать эксперимент')
         self.start_experiment_button.clicked.connect(self.setup_experiment)
+        # endregion
 
+        # region Поле выбора эксперимента
         self.experiment_choices_box = QComboBox(self)
         self.experiment_choices_box.setFixedWidth(150)
         self.experiment_choices_box.move(50, 10)
         self.experiment_choices_box.addItems(self.experiments.keys())
+        # endregion
 
+        # region
         self.statistics_table = QTableWidget(self)
         self.statistics_table.setColumnCount(3)
         self.statistics_table.setRowCount(0)
@@ -51,6 +56,7 @@ class MainWindow(QMainWindow):
         self.statistics_table.setHorizontalHeaderLabels(['№', 'Время реакции', 'Результат'])
         for i in range(3):
             self.statistics_table.setColumnWidth(i, 100)
+        # endregion
 
     def init_experiments(self):
         self.numpad = Numpad(self)
