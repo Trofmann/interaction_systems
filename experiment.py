@@ -44,7 +44,6 @@ class Experiment(QThread):
         button_label.highlight()
         # Сразу меняем состояние
         self.state = ExperimentState.WAIT_FOR_BUTTON_PRESS
-        print(f'Выбрана кнопка {self.chosen_button}')
 
     def check_button(self, button: DigitButton) -> bool | None:
         if self.state != ExperimentState.WAIT_FOR_BUTTON_PRESS:
@@ -60,7 +59,6 @@ class Experiment(QThread):
             self.chosen_button = None
             # Изменяем состояние
             self.state = ExperimentState.WAIT_FOR_BUTTON_CHOICE
-            print('Success')
         else:
             # Ошиблись
             self.state = ExperimentState.FAILED
