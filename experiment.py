@@ -49,12 +49,12 @@ class Experiment(QThread):
         result = button == self.chosen_button
         if result:
             # Нажали верно
-            # Изменяем состояние
-            self.state = ExperimentState.WAIT_FOR_BUTTON_CHOICE
             # Отключаем выделение
             self.available_buttons[self.chosen_button].unhighlight()
             # Сбрасываем выбранную кнопку
             self.chosen_button = None
+            # Изменяем состояние
+            self.state = ExperimentState.WAIT_FOR_BUTTON_CHOICE
             print('Success')
         else:
             # Ошиблись

@@ -1,11 +1,16 @@
 from abc import ABC, abstractmethod
 
-from PyQt5.QtWidgets import QMainWindow, QLabel
 from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import (
+    QMainWindow,
+    QLabel,
+)
+
 from button import DigitButton
 
 BUTTON_WIDTH = 20
 BUTTON_HEIGHT = 20
+BUTTON_BORDER = 'border: 1px solid black'
 
 __all__ = [
     'ButtonLabel',
@@ -17,10 +22,10 @@ __all__ = [
 
 class ButtonLabel(QLabel):
     def highlight(self):
-        ...
+        self.setStyleSheet(f'background-color:red;{BUTTON_BORDER}')
 
     def unhighlight(self):
-        ...
+        self.setStyleSheet(f'{BUTTON_BORDER}')
 
 
 class ButtonsSet(ABC):
@@ -46,7 +51,7 @@ class ButtonsSet(ABC):
             height: int = BUTTON_HEIGHT
     ) -> ButtonLabel:
         label = ButtonLabel(label, self.window)
-        label.setStyleSheet('border: 1px solid black;')
+        label.setStyleSheet(BUTTON_BORDER)
         label.setGeometry(x_pos, y_pos, width, height)
         label.setVisible(False)  # Используется при инициализации
         return label
