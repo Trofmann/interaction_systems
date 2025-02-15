@@ -9,6 +9,7 @@ from keyboard import (
     ButtonsSet,
     ButtonLabel,
 )
+from statistics import StatisticsRecord
 
 
 class ExperimentState(Enum):
@@ -32,6 +33,8 @@ class Experiment(QThread):
             self._available_buttons.update(bs.button_label_dict)
 
         self.description = description
+
+        self.statistics: list[StatisticsRecord] = []  # Статистика
 
     def run(self):
         while True:
@@ -60,7 +63,12 @@ class Experiment(QThread):
             self._available_buttons[self._chosen_button].unhighlight()
             # Нужно, чтоб успело отрисоваться
             time.sleep(0.3)
-            print(button_pressed_time - self._button_chose_time)
+            self.statistics.append(StatisticsRecord(
+                chose_time=self._button_chose_time,
+                pressed_time=button_pressed_time,
+                is_success=True
+            ))
+            print(self.statistics[-1])
             # Сбрасываем выбранную кнопку
             self._chosen_button = None
             self._button_chose_time = None
@@ -69,6 +77,12 @@ class Experiment(QThread):
         else:
             # Ошиблись
             self._state = ExperimentState.FAILED
+            self.statistics.append(StatisticsRecord(
+                chose_time=self._button_chose_time,
+                pressed_time=button_pressed_time,
+                is_success=False
+            ))
+            print(self.statistics[-1])
             print('Failed')
         return result
 
