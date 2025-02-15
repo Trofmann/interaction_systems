@@ -4,6 +4,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
     QApplication,
     QMainWindow,
+    QPushButton,
 )
 
 from button import DigitButton
@@ -21,11 +22,16 @@ class MainWindow(QMainWindow):
         self.show()
         self.experiment = None
         self.init_experiments()
-        self.setup_experiment()
 
     def setup_ui(self):
         self.setWindowTitle('Lab1')
         self.setGeometry(500, 300, 800, 700)
+
+        self.start_experiment_button = QPushButton('Начать эксперимент', self)
+        self.start_experiment_button.move(400, 500)
+        self.start_experiment_button.setFixedWidth(200)
+        self.start_experiment_button.setToolTip('Начать эксперимент')
+        self.start_experiment_button.clicked.connect(self.setup_experiment)
 
     def init_experiments(self):
         self.numpad = Numpad(self)
@@ -35,10 +41,15 @@ class MainWindow(QMainWindow):
 
     def setup_experiment(self):
         if self.experiment is None:
-            self.experiment = self.experiment_1
+            self.experiment = self._extract_experiment()
         else:
             self.experiment.terminate()
+            self.experiment = None
+        self.experiment = self._extract_experiment()
         self.experiment.start()
+
+    def _extract_experiment(self) -> Experiment:
+        return self.experiment_1
 
     def keyPressEvent(self, event) -> None:
         button = DigitButton(value=event.key(), is_numpad=bool(event.modifiers() & Qt.KeypadModifier))
