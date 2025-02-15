@@ -20,7 +20,7 @@ class ExperimentState(Enum):
 
 
 class Experiment(QThread):
-    def __init__(self, button_sets: tuple[ButtonsSet, ...]):
+    def __init__(self, button_sets: tuple[ButtonsSet, ...], description: str):
         super().__init__()
         self.state = ExperimentState.NOT_ACTIVE
 
@@ -29,6 +29,8 @@ class Experiment(QThread):
         self.available_buttons: dict[DigitButton, ButtonLabel] = dict()
         for bs in self._button_sets:
             self.available_buttons.update(bs.button_label_dict)
+
+        self.description = description
 
     def run(self):
         while True:
