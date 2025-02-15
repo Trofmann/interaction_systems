@@ -1,10 +1,10 @@
+import random
 from enum import Enum
 
 from PyQt5.QtCore import QThread
-from PyQt5.QtCore import Qt
 
 from button import DigitButton
-from keyboard import ButtonsSet
+from keyboard import ButtonsSet, ButtonLabel
 
 
 class ExperimentState(Enum):
@@ -19,15 +19,26 @@ class Experiment(QThread):
     def __init__(self, button_sets: tuple[ButtonsSet, ...]):
         super().__init__()
         self.state = ExperimentState.NOT_ACTIVE
+
         self.chosen_button: DigitButton | None = None
         self._button_sets: tuple[ButtonsSet, ...] = button_sets
+        self.available_buttons: dict[DigitButton, ButtonLabel] = dict()
+        for bs in self._button_sets:
+            self.available_buttons.update(bs.button_label_dict)
 
     def run(self):
         while True:
             if self.state == ExperimentState.WAIT_FOR_BUTTON_CHOICE:
-                self.chosen_button = DigitButton(Qt.Key_5, False)
-                print(f'Выбрана кнопка {self.chosen_button}')
-                self.state = ExperimentState.WAIT_FOR_BUTTON_PRESS
+                self._chose_button()
+
+    def _chose_button(self):
+        """Выбор кнопки"""
+        button, button_label = random.choice(list(self.available_buttons.items()))  # type: DigitButton, ButtonLabel
+        self.chosen_button = button
+        button_label.highlight()
+        # Сразу меняем состояние
+        self.state = ExperimentState.WAIT_FOR_BUTTON_PRESS
+        print(f'Выбрана кнопка {self.chosen_button}')
 
     def check_button(self, button: DigitButton) -> bool | None:
         if self.state != ExperimentState.WAIT_FOR_BUTTON_PRESS:
