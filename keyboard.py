@@ -21,11 +21,14 @@ __all__ = [
 
 
 class ButtonLabel(QLabel):
-    def highlight(self):
+    def highlight(self) -> None:
         self.setStyleSheet(f'background-color:red;{BUTTON_BORDER}')
 
-    def unhighlight(self):
-        self.setStyleSheet(f'{BUTTON_BORDER}')
+    def unhighlight(self) -> None:
+        self.setStyleSheet(BUTTON_BORDER)
+
+    def reset_style_sheet(self) -> None:
+        self.setStyleSheet(BUTTON_BORDER)
 
 
 class ButtonsSet(ABC):
@@ -59,6 +62,8 @@ class ButtonsSet(ABC):
     def set_visibility(self, visible: bool) -> None:
         for label in self.button_label_dict.values():
             label.setVisible(visible)
+            if not visible:
+                label.reset_style_sheet()
 
 
 class KeyBoard(ButtonsSet):
