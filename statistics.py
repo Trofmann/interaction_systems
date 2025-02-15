@@ -22,3 +22,7 @@ class StatisticsRecord:
     @property
     def reaction_time(self) -> float:
         return self.pressed_time - self.chose_time
+
+    @property
+    def result_verbose(self) -> str:
+        return 'Успешно' if self.is_success else 'Ошибка'

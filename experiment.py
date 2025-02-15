@@ -27,7 +27,7 @@ class ExperimentState(Enum):
 
 
 class Experiment(QThread):
-    statistics_changed = pyqtSignal(StatisticsType)
+    statistics_changed = pyqtSignal(list)  # Дженерики нельзя
 
     def __init__(self, button_sets: tuple[ButtonsSet, ...], description: str):
         super().__init__()

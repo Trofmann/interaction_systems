@@ -1,5 +1,6 @@
 import sys
 import time
+from collections import OrderedDict
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
@@ -8,6 +9,7 @@ from PyQt5.QtWidgets import (
     QPushButton,
     QComboBox,
     QTableWidget,
+    QTableWidgetItem,
 )
 
 from button import DigitButton
@@ -16,7 +18,7 @@ from keyboard import (
     KeyBoard,
     Numpad,
 )
-from collections import OrderedDict
+from statistics import StatisticsType
 
 
 class MainWindow(QMainWindow):
@@ -48,13 +50,13 @@ class MainWindow(QMainWindow):
 
         # region
         self.statistics_table = QTableWidget(self)
-        self.statistics_table.setColumnCount(3)
+        self.statistics_table.setColumnCount(2)
         self.statistics_table.setRowCount(0)
         self.statistics_table.move(400, 50)
-        self.statistics_table.setFixedWidth(300)
+        self.statistics_table.setFixedWidth(220)
         self.statistics_table.setFixedHeight(200)
-        self.statistics_table.setHorizontalHeaderLabels(['№', 'Время реакции', 'Результат'])
-        for i in range(3):
+        self.statistics_table.setHorizontalHeaderLabels(['Время реакции', 'Результат'])
+        for i in range(2):
             self.statistics_table.setColumnWidth(i, 100)
         # endregion
 
@@ -83,8 +85,10 @@ class MainWindow(QMainWindow):
             self.experiment.terminate()
             # Чтоб поток успел остановиться
             time.sleep(0.3)
+            self.experiment.statistics_changed.disconnect(self.redraw_statistics)
             self.experiment = None
         self.experiment = self._extract_experiment()
+        self.experiment.statistics_changed.connect(self.redraw_statistics)
         self.experiment.start()
 
     def _extract_experiment(self) -> Experiment:
@@ -93,6 +97,16 @@ class MainWindow(QMainWindow):
     def keyPressEvent(self, event) -> None:
         button = DigitButton(value=event.key(), is_numpad=bool(event.modifiers() & Qt.KeypadModifier))
         self.experiment.check_button(button=button)
+
+    def redraw_statistics(self, statistics_records: StatisticsType):
+        self.statistics_table.setRowCount(len(statistics_records))
+        for row, record in enumerate(statistics_records):
+            row_data = [
+                str(record),
+                record.result_verbose,
+            ]
+            for col, value in enumerate(row_data):
+                self.statistics_table.setItem(row, col, QTableWidgetItem(value))
 
 
 if __name__ == '__main__':
