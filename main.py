@@ -54,7 +54,7 @@ class MainWindow(QMainWindow):
         self.statistics_table.setRowCount(0)
         self.statistics_table.move(400, 50)
         self.statistics_table.setFixedWidth(220)
-        self.statistics_table.setFixedHeight(200)
+        self.statistics_table.setFixedHeight(350)
         self.statistics_table.setHorizontalHeaderLabels(['Время реакции', 'Результат'])
         for i in range(2):
             self.statistics_table.setColumnWidth(i, 100)
