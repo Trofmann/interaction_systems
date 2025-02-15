@@ -4,7 +4,10 @@ from enum import Enum
 from PyQt5.QtCore import QThread
 
 from button import DigitButton
-from keyboard import ButtonsSet, ButtonLabel
+from keyboard import (
+    ButtonsSet,
+    ButtonLabel,
+)
 
 
 class ExperimentState(Enum):
