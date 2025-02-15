@@ -1,11 +1,12 @@
-from typing import TypeAlias
+from PyQt5.QtCore import (
+    pyqtSignal,
+    QObject,
+)
 
 __all__ = [
     'StatisticsRecord',
-    'StatisticsType',
+    'StatisticsStorage',
 ]
-
-StatisticsType: TypeAlias = list['StatisticsRecord']
 
 
 class StatisticsRecord:
@@ -26,3 +27,22 @@ class StatisticsRecord:
     @property
     def result_verbose(self) -> str:
         return 'Успешно' if self.is_success else 'Ошибка'
+
+
+class StatisticsStorage(QObject):
+    statistics_changed = pyqtSignal(list)  # Дженерики нельзя
+
+    def __init__(self):
+        super().__init__()
+        self._records: list['StatisticsRecord'] = []
+
+    def _emit_signal(self):
+        self.statistics_changed.emit(self._records)
+
+    def add_record(self, record: StatisticsRecord) -> None:
+        self._records.append(record)
+        self._emit_signal()
+
+    def flush(self) -> None:
+        self._records = []
+        self._emit_signal()

@@ -18,7 +18,7 @@ from keyboard import (
     KeyBoard,
     Numpad,
 )
-from statistics import StatisticsType
+from statistics import StatisticsRecord
 
 
 class MainWindow(QMainWindow):
@@ -85,10 +85,10 @@ class MainWindow(QMainWindow):
             self.experiment.terminate()
             # Чтоб поток успел остановиться
             time.sleep(0.3)
-            self.experiment.statistics_changed.disconnect(self.redraw_statistics)
+            self.experiment.statistics_storage.statistics_changed.disconnect(self.redraw_statistics)
             self.experiment = None
         self.experiment = self._extract_experiment()
-        self.experiment.statistics_changed.connect(self.redraw_statistics)
+        self.experiment.statistics_storage.statistics_changed.connect(self.redraw_statistics)
         self.experiment.start()
 
     def _extract_experiment(self) -> Experiment:
@@ -98,7 +98,7 @@ class MainWindow(QMainWindow):
         button = DigitButton(value=event.key(), is_numpad=bool(event.modifiers() & Qt.KeypadModifier))
         self.experiment.check_button(button=button)
 
-    def redraw_statistics(self, statistics_records: StatisticsType):
+    def redraw_statistics(self, statistics_records: list[StatisticsRecord]):
         self.statistics_table.setRowCount(len(statistics_records))
         for row, record in enumerate(statistics_records):
             row_data = [

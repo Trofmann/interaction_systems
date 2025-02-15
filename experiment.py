@@ -2,10 +2,7 @@ import random
 import time
 from enum import Enum
 
-from PyQt5.QtCore import (
-    QThread,
-    pyqtSignal,
-)
+from PyQt5.QtCore import QThread
 
 from button import DigitButton
 from keyboard import (
@@ -14,7 +11,7 @@ from keyboard import (
 )
 from statistics import (
     StatisticsRecord,
-    StatisticsType,
+    StatisticsStorage,
 )
 
 
@@ -27,8 +24,6 @@ class ExperimentState(Enum):
 
 
 class Experiment(QThread):
-    statistics_changed = pyqtSignal(list)  # Дженерики нельзя
-
     def __init__(self, button_sets: tuple[ButtonsSet, ...], description: str):
         super().__init__()
         self._state = ExperimentState.NOT_ACTIVE
@@ -42,7 +37,7 @@ class Experiment(QThread):
 
         self.description = description
 
-        self.statistics: StatisticsType = []  # Статистика
+        self.statistics_storage: StatisticsStorage = StatisticsStorage()  # Статистика
 
     def run(self):
         while True:
@@ -71,12 +66,13 @@ class Experiment(QThread):
             self._available_buttons[self._chosen_button].unhighlight()
             # Нужно, чтоб успело отрисоваться
             time.sleep(0.3)
-            self.statistics.append(StatisticsRecord(
-                chose_time=self._button_chose_time,
-                pressed_time=button_pressed_time,
-                is_success=True
-            ))
-            self.statistics_changed.emit(self.statistics)
+            self.statistics_storage.add_record(
+                StatisticsRecord(
+                    chose_time=self._button_chose_time,
+                    pressed_time=button_pressed_time,
+                    is_success=True
+                )
+            )
             # Сбрасываем выбранную кнопку
             self._chosen_button = None
             self._button_chose_time = None
@@ -85,13 +81,13 @@ class Experiment(QThread):
         else:
             # Ошиблись
             self._state = ExperimentState.FAILED
-            self.statistics.append(StatisticsRecord(
-                chose_time=self._button_chose_time,
-                pressed_time=button_pressed_time,
-                is_success=False
-            ))
-            self.statistics_changed.emit(self.statistics)
-            print('Failed')
+            self.statistics_storage.add_record(
+                StatisticsRecord(
+                    chose_time=self._button_chose_time,
+                    pressed_time=button_pressed_time,
+                    is_success=False
+                )
+            )
         return result
 
     def start(self, *args, **kwargs):
@@ -103,8 +99,7 @@ class Experiment(QThread):
     def terminate(self):
         self._state = ExperimentState.NOT_ACTIVE
         self._chosen_button = None
-        self.statistics = []
-        self.statistics_changed.emit(self.statistics)
+        self.statistics_storage.flush()
         for button_set in self._button_sets:
             button_set.set_visibility(False)
         super().terminate()
