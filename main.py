@@ -37,7 +37,18 @@ class MainWindow(QMainWindow):
         self.numpad = Numpad(self)
         self.keyboard = KeyBoard(self)
 
-        self.experiment_1 = Experiment(button_sets=(self.numpad, self.keyboard), description='Клавиатура + Нумпад')
+        self.experiment_1 = Experiment(
+            button_sets=(self.keyboard,),
+            description='Клавиатура'
+        )
+        self.experiment_2 = Experiment(
+            button_sets=(self.numpad,),
+            description='Нумпад',
+        )
+        self.experiment_3 = Experiment(
+            button_sets=(self.numpad, self.keyboard),
+            description='Клавиатура + Нумпад'
+        )
 
     def setup_experiment(self):
         if self.experiment is None:
