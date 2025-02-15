@@ -1,7 +1,10 @@
 import sys
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication, QMainWindow
+from PyQt5.QtWidgets import (
+    QApplication,
+    QMainWindow,
+)
 
 from button import DigitButton
 from experiment import Experiment
