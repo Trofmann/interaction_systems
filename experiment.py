@@ -22,58 +22,58 @@ class ExperimentState(Enum):
 class Experiment(QThread):
     def __init__(self, button_sets: tuple[ButtonsSet, ...], description: str):
         super().__init__()
-        self.state = ExperimentState.NOT_ACTIVE
+        self._state = ExperimentState.NOT_ACTIVE
 
-        self.chosen_button: DigitButton | None = None
+        self._chosen_button: DigitButton | None = None
         self._button_sets: tuple[ButtonsSet, ...] = button_sets
-        self.available_buttons: dict[DigitButton, ButtonLabel] = dict()
+        self._available_buttons: dict[DigitButton, ButtonLabel] = dict()
         for bs in self._button_sets:
-            self.available_buttons.update(bs.button_label_dict)
+            self._available_buttons.update(bs.button_label_dict)
 
         self.description = description
 
     def run(self):
         while True:
-            if self.state == ExperimentState.WAIT_FOR_BUTTON_CHOICE:
+            if self._state == ExperimentState.WAIT_FOR_BUTTON_CHOICE:
                 self._chose_button()
 
     def _chose_button(self):
         """Выбор кнопки"""
-        button, button_label = random.choice(list(self.available_buttons.items()))  # type: DigitButton, ButtonLabel
-        self.chosen_button = button
+        button, button_label = random.choice(list(self._available_buttons.items()))  # type: DigitButton, ButtonLabel
+        self._chosen_button = button
         button_label.highlight()
         # Сразу меняем состояние
-        self.state = ExperimentState.WAIT_FOR_BUTTON_PRESS
+        self._state = ExperimentState.WAIT_FOR_BUTTON_PRESS
 
     def check_button(self, button: DigitButton) -> bool | None:
-        if self.state != ExperimentState.WAIT_FOR_BUTTON_PRESS:
+        if self._state != ExperimentState.WAIT_FOR_BUTTON_PRESS:
             return None
-        result = button == self.chosen_button
+        result = button == self._chosen_button
         if result:
             # Нажали верно
             # Отключаем выделение
-            self.available_buttons[self.chosen_button].unhighlight()
+            self._available_buttons[self._chosen_button].unhighlight()
             # Нужно, чтоб успело отрисоваться
             time.sleep(0.3)
             # Сбрасываем выбранную кнопку
-            self.chosen_button = None
+            self._chosen_button = None
             # Изменяем состояние
-            self.state = ExperimentState.WAIT_FOR_BUTTON_CHOICE
+            self._state = ExperimentState.WAIT_FOR_BUTTON_CHOICE
         else:
             # Ошиблись
-            self.state = ExperimentState.FAILED
+            self._state = ExperimentState.FAILED
             print('Failed')
         return result
 
     def start(self, *args, **kwargs):
         for button_set in self._button_sets:
             button_set.set_visibility(True)
-        self.state = ExperimentState.WAIT_FOR_BUTTON_CHOICE
+        self._state = ExperimentState.WAIT_FOR_BUTTON_CHOICE
         super().start(*args, **kwargs)
 
     def terminate(self):
-        self.state = ExperimentState.NOT_ACTIVE
-        self.chosen_button = None
+        self._state = ExperimentState.NOT_ACTIVE
+        self._chosen_button = None
         for button_set in self._button_sets:
             button_set.set_visibility(False)
         super().terminate()
