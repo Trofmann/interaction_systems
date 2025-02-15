@@ -25,7 +25,7 @@ class Experiment(QThread):
         self._state = ExperimentState.NOT_ACTIVE
 
         self._chosen_button: DigitButton | None = None
-        self._button_choice_time: float | None = None  # Время выбора кнопки
+        self._button_chose_time: float | None = None  # Время выбора кнопки
         self._button_sets: tuple[ButtonsSet, ...] = button_sets
         self._available_buttons: dict[DigitButton, ButtonLabel] = dict()
         for bs in self._button_sets:
@@ -44,7 +44,7 @@ class Experiment(QThread):
         self._chosen_button = button
         button_label.highlight()
         # Запомним, когда выбрали кнопку
-        self._button_choice_time = time.time()
+        self._button_chose_time = time.time()
         # Сразу меняем состояние
         self._state = ExperimentState.WAIT_FOR_BUTTON_PRESS
 
@@ -60,10 +60,10 @@ class Experiment(QThread):
             self._available_buttons[self._chosen_button].unhighlight()
             # Нужно, чтоб успело отрисоваться
             time.sleep(0.3)
-            print(button_pressed_time - self._button_choice_time)
+            print(button_pressed_time - self._button_chose_time)
             # Сбрасываем выбранную кнопку
             self._chosen_button = None
-            self._button_choice_time = None
+            self._button_chose_time = None
             # Изменяем состояние
             self._state = ExperimentState.WAIT_FOR_BUTTON_CHOICE
         else:
