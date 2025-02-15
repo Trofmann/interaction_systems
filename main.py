@@ -67,15 +67,18 @@ class MainWindow(QMainWindow):
         self.experiments = OrderedDict()
         self.experiments['Клавиатура'] = Experiment(
             button_sets=(self.keyboard,),
-            description='Клавиатура'
+            description='Клавиатура',
+            attempts_count=10,
         )
         self.experiments['Нумпад'] = Experiment(
             button_sets=(self.numpad,),
             description='Нумпад',
+            attempts_count=10,
         )
         self.experiments['Клавиатура + Нумпад'] = Experiment(
             button_sets=(self.numpad, self.keyboard),
-            description='Клавиатура + Нумпад'
+            description='Клавиатура + Нумпад',
+            attempts_count=10,
         )
 
     def setup_experiment(self):

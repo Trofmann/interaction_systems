@@ -24,8 +24,11 @@ class ExperimentState(Enum):
 
 
 class Experiment(QThread):
-    def __init__(self, button_sets: tuple[ButtonsSet, ...], description: str):
+    def __init__(self, button_sets: tuple[ButtonsSet, ...], description: str, attempts_count: int):
         super().__init__()
+        self.attempts_count = attempts_count
+        self.description = description
+
         self._state = ExperimentState.NOT_ACTIVE
 
         self._chosen_button: DigitButton | None = None
@@ -34,8 +37,6 @@ class Experiment(QThread):
         self._available_buttons: dict[DigitButton, ButtonLabel] = dict()
         for bs in self._button_sets:
             self._available_buttons.update(bs.button_label_dict)
-
-        self.description = description
 
         self.statistics_storage: StatisticsStorage = StatisticsStorage()  # Статистика
 
