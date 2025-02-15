@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import (
     QApplication,
     QMainWindow,
     QPushButton,
+    QComboBox,
 )
 
 from button import DigitButton
@@ -13,15 +14,16 @@ from keyboard import (
     KeyBoard,
     Numpad,
 )
+from collections import OrderedDict
 
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+        self.init_experiments()
         self.setup_ui()
         self.show()
         self.experiment = None
-        self.init_experiments()
 
     def setup_ui(self):
         self.setWindowTitle('Lab1')
@@ -33,19 +35,25 @@ class MainWindow(QMainWindow):
         self.start_experiment_button.setToolTip('Начать эксперимент')
         self.start_experiment_button.clicked.connect(self.setup_experiment)
 
+        self.experiment_choices_box = QComboBox(self)
+        self.experiment_choices_box.setFixedWidth(150)
+        self.experiment_choices_box.move(50, 10)
+        self.experiment_choices_box.addItems(self.experiments.keys())
+
     def init_experiments(self):
         self.numpad = Numpad(self)
         self.keyboard = KeyBoard(self)
 
-        self.experiment_1 = Experiment(
+        self.experiments = OrderedDict()
+        self.experiments['Клавиатура'] = Experiment(
             button_sets=(self.keyboard,),
             description='Клавиатура'
         )
-        self.experiment_2 = Experiment(
+        self.experiments['Нумпад'] = Experiment(
             button_sets=(self.numpad,),
             description='Нумпад',
         )
-        self.experiment_3 = Experiment(
+        self.experiments['Клавиатура + Нумпад'] = Experiment(
             button_sets=(self.numpad, self.keyboard),
             description='Клавиатура + Нумпад'
         )
@@ -60,7 +68,7 @@ class MainWindow(QMainWindow):
         self.experiment.start()
 
     def _extract_experiment(self) -> Experiment:
-        return self.experiment_1
+        return self.experiments[self.experiment_choices_box.currentText()]
 
     def keyPressEvent(self, event) -> None:
         button = DigitButton(value=event.key(), is_numpad=bool(event.modifiers() & Qt.KeypadModifier))
