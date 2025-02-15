@@ -8,24 +8,33 @@ BUTTON_WIDTH = 20
 BUTTON_HEIGHT = 20
 
 __all__ = [
+    'ButtonLabel',
     'ButtonsSet',
     'KeyBoard',
     'Numpad',
 ]
 
 
+class ButtonLabel(QLabel):
+    def highlight(self):
+        ...
+
+    def unhighlight(self):
+        ...
+
+
 class ButtonsSet(ABC):
     def __init__(self, window: QMainWindow):
         self.window = window
         self.buttons: tuple[DigitButton, ...] = self._get_buttons()
-        self.button_label_dict: dict[DigitButton, QLabel] = self._get_button_label_dict()
+        self.button_label_dict: dict[DigitButton, ButtonLabel] = self._get_button_label_dict()
 
     @abstractmethod
     def _get_buttons(self) -> tuple[DigitButton, ...]:
         pass
 
     @abstractmethod
-    def _get_button_label_dict(self) -> dict[DigitButton, QLabel]:
+    def _get_button_label_dict(self) -> dict[DigitButton, ButtonLabel]:
         pass
 
     def _generate_button(
@@ -35,8 +44,8 @@ class ButtonsSet(ABC):
             y_pos: int,
             width: int = BUTTON_WIDTH,
             height: int = BUTTON_HEIGHT
-    ) -> QLabel:
-        label = QLabel(label, self.window)
+    ) -> ButtonLabel:
+        label = ButtonLabel(label, self.window)
         label.setStyleSheet('border: 1px solid black;')
         label.setGeometry(x_pos, y_pos, width, height)
         label.setVisible(False)  # Используется при инициализации
@@ -54,7 +63,7 @@ class KeyBoard(ButtonsSet):
             for key in range(Qt.Key_0, Qt.Key_9 + 1)
         ])
 
-    def _get_button_label_dict(self) -> dict[DigitButton, QLabel]:
+    def _get_button_label_dict(self) -> dict[DigitButton, ButtonLabel]:
         x_pos = 50
         y_pos = 50
 
@@ -75,7 +84,7 @@ class Numpad(ButtonsSet):
             for key in range(Qt.Key_0, Qt.Key_9 + 1)
         ])
 
-    def _get_button_label_dict(self) -> dict[DigitButton, QLabel]:
+    def _get_button_label_dict(self) -> dict[DigitButton, ButtonLabel]:
         x_pos = 50
         y_pos = 350
 

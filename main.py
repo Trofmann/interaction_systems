@@ -34,13 +34,8 @@ class MainWindow(QMainWindow):
         if self.experiment is None:
             self.experiment = self.experiment_1
         else:
-            self.experiment.button_chosen.disconnect()
             self.experiment.terminate()
         self.experiment.start()
-        self.experiment.button_chosen.connect(self.highlight_key)
-
-    def highlight_key(self, button: DigitButton):
-        print(f'Подсвечена кнопка {button}')
 
     def keyPressEvent(self, event) -> None:
         button = DigitButton(value=event.key(), is_numpad=bool(event.modifiers() & Qt.KeypadModifier))
