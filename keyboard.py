@@ -75,7 +75,7 @@ class KeyBoard(ButtonsSet):
 
     def _get_button_label_dict(self) -> dict[DigitButton, ButtonLabel]:
         x_pos = 50
-        y_pos = 50
+        y_pos = 70
 
         return {
             button: self._generate_button(

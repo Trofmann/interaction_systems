@@ -31,7 +31,7 @@ class MainWindow(QMainWindow):
         self.setGeometry(500, 300, 800, 700)
 
         self.start_experiment_button = QPushButton('Начать эксперимент', self)
-        self.start_experiment_button.move(400, 500)
+        self.start_experiment_button.move(400, 10)
         self.start_experiment_button.setFixedWidth(200)
         self.start_experiment_button.setToolTip('Начать эксперимент')
         self.start_experiment_button.clicked.connect(self.setup_experiment)
