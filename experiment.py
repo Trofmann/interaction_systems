@@ -78,7 +78,10 @@ class Experiment(QThread):
             self._chosen_button = None
             self._button_chose_time = None
             # Изменяем состояние
-            self._state = ExperimentState.WAIT_FOR_BUTTON_CHOICE
+            if len(self.statistics_storage) == self.attempts_count:
+                self._state = ExperimentState.COMPLETED
+            else:
+                self._state = ExperimentState.WAIT_FOR_BUTTON_CHOICE
         else:
             # Ошиблись
             self._state = ExperimentState.FAILED

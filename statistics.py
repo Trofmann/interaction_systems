@@ -46,3 +46,6 @@ class StatisticsStorage(QObject):
     def flush(self) -> None:
         self._records = []
         self._emit_signal()
+
+    def __len__(self):
+        return len(self._records)
