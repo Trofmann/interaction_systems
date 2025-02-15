@@ -1,8 +1,10 @@
 import sys
 
-from experiment import experiment_1
-from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel
 from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel
+
+from button import DigitButton
+from experiment import experiment_1
 
 BUTTON_WIDTH = 20
 BUTTON_HEIGHT = 20
@@ -80,14 +82,12 @@ class MainWindow(QMainWindow):
         self.experiment.start()
         self.experiment.button_chosen.connect(self.highlight_key)
 
-    def highlight_key(self, button: int, is_numpad: bool):
-        print(button, is_numpad)
+    def highlight_key(self, button: DigitButton):
+        print(button)
 
     def keyPressEvent(self, event) -> None:
-        self.experiment.check_button(
-            button=event.key(),
-            is_numpad=bool(event.modifiers() & Qt.KeypadModifier)
-        )
+        button = DigitButton(value=event.key(), is_numpad=bool(event.modifiers() & Qt.KeypadModifier))
+        self.experiment.check_button(button=button)
 
 
 if __name__ == '__main__':

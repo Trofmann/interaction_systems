@@ -3,6 +3,8 @@ from enum import Enum
 from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5.QtCore import Qt
 
+from button import DigitButton
+
 
 class ExperimentState(Enum):
     NOT_ACTIVE = 0
@@ -13,30 +15,31 @@ class ExperimentState(Enum):
 
 
 class Experiment(QThread):
-    button_chosen = pyqtSignal(int, bool)
+    button_chosen = pyqtSignal(DigitButton)
 
     def __init__(self):
         super().__init__()
         self.state = ExperimentState.NOT_ACTIVE
-        self.chosen_button = None
-        self.is_numpad = False
+        self.chosen_button: DigitButton | None = None
 
     def run(self):
         while True:
             if self.state == ExperimentState.WAIT_FOR_BUTTON_CHOICE:
-                self.chosen_button = Qt.Key_5
-                self.is_numpad = False
-                self.button_chosen.emit(self.chosen_button, self.is_numpad)
+                self.chosen_button = DigitButton(Qt.Key_5, False)
+                self.button_chosen.emit(self.chosen_button)
+                print(f'Выбрана кнопка {self.chosen_button}')
                 self.state = ExperimentState.WAIT_FOR_BUTTON_PRESS
 
-    def check_button(self, button: int, is_numpad: bool) -> bool | None:
+    def check_button(self, button: DigitButton) -> bool | None:
         if self.state != ExperimentState.WAIT_FOR_BUTTON_PRESS:
             return None
-        result = button == self.chosen_button and is_numpad == self.is_numpad
+        result = button == self.chosen_button
         if result:
             self.state = ExperimentState.WAIT_FOR_BUTTON_CHOICE
+            print('Success')
         else:
             self.state = ExperimentState.FAILED
+            print('Failed')
         return result
 
     def start(self, *args, **kwargs):
