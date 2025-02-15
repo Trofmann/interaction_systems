@@ -4,7 +4,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QMainWindow
 
 from button import DigitButton
-from experiment import experiment_1
+from experiment import Experiment
 from keyboard import (
     KeyBoard,
     Numpad,
@@ -17,20 +17,22 @@ class MainWindow(QMainWindow):
         self.setup_ui()
         self.show()
         self.experiment = None
+        self.init_experiments()
         self.setup_experiment()
 
     def setup_ui(self):
         self.setWindowTitle('Lab1')
         self.setGeometry(500, 300, 800, 700)
 
-        self.keyboard = KeyBoard(self)
-        self.keyboard.draw()
+    def init_experiments(self):
         self.numpad = Numpad(self)
-        self.numpad.draw()
+        self.keyboard = KeyBoard(self)
+
+        self.experiment_1 = Experiment(button_sets=(self.numpad, self.keyboard))
 
     def setup_experiment(self):
         if self.experiment is None:
-            self.experiment = experiment_1
+            self.experiment = self.experiment_1
         else:
             self.experiment.button_chosen.disconnect()
         self.experiment.start()

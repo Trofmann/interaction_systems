@@ -42,9 +42,9 @@ class ButtonsSet(ABC):
         label.setVisible(False)  # Используется при инициализации
         return label
 
-    def draw(self):
+    def set_visibility(self, visible: bool) -> None:
         for label in self.button_label_dict.values():
-            label.setVisible(True)
+            label.setVisible(visible)
 
 
 class KeyBoard(ButtonsSet):
