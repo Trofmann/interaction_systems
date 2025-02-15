@@ -1,6 +1,11 @@
+from typing import TypeAlias
+
 __all__ = [
     'StatisticsRecord',
+    'StatisticsType',
 ]
+
+StatisticsType: TypeAlias = list['StatisticsRecord']
 
 
 class StatisticsRecord:

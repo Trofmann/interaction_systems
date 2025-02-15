@@ -2,14 +2,20 @@ import random
 import time
 from enum import Enum
 
-from PyQt5.QtCore import QThread
+from PyQt5.QtCore import (
+    QThread,
+    pyqtSignal,
+)
 
 from button import DigitButton
 from keyboard import (
     ButtonsSet,
     ButtonLabel,
 )
-from statistics import StatisticsRecord
+from statistics import (
+    StatisticsRecord,
+    StatisticsType,
+)
 
 
 class ExperimentState(Enum):
@@ -21,6 +27,8 @@ class ExperimentState(Enum):
 
 
 class Experiment(QThread):
+    statistics_changed = pyqtSignal(StatisticsType)
+
     def __init__(self, button_sets: tuple[ButtonsSet, ...], description: str):
         super().__init__()
         self._state = ExperimentState.NOT_ACTIVE
@@ -34,7 +42,7 @@ class Experiment(QThread):
 
         self.description = description
 
-        self.statistics: list[StatisticsRecord] = []  # Статистика
+        self.statistics: StatisticsType = []  # Статистика
 
     def run(self):
         while True:
@@ -68,7 +76,7 @@ class Experiment(QThread):
                 pressed_time=button_pressed_time,
                 is_success=True
             ))
-            print(self.statistics[-1])
+            self.statistics_changed.emit(self.statistics)
             # Сбрасываем выбранную кнопку
             self._chosen_button = None
             self._button_chose_time = None
@@ -82,7 +90,7 @@ class Experiment(QThread):
                 pressed_time=button_pressed_time,
                 is_success=False
             ))
-            print(self.statistics[-1])
+            self.statistics_changed.emit(self.statistics)
             print('Failed')
         return result
 
@@ -96,6 +104,7 @@ class Experiment(QThread):
         self._state = ExperimentState.NOT_ACTIVE
         self._chosen_button = None
         self.statistics = []
+        self.statistics_changed.emit(self.statistics)
         for button_set in self._button_sets:
             button_set.set_visibility(False)
         super().terminate()
