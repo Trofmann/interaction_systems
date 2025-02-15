@@ -73,6 +73,7 @@ class Experiment(QThread):
 
     def terminate(self):
         self.state = ExperimentState.NOT_ACTIVE
+        self.chosen_button = None
         for button_set in self._button_sets:
             button_set.set_visibility(False)
         super().terminate()
