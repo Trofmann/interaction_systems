@@ -35,6 +35,7 @@ class MainWindow(QMainWindow):
             self.experiment = self.experiment_1
         else:
             self.experiment.button_chosen.disconnect()
+            self.experiment.terminate()
         self.experiment.start()
         self.experiment.button_chosen.connect(self.highlight_key)
 
