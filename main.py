@@ -7,6 +7,7 @@ from PyQt5.QtWidgets import (
     QMainWindow,
     QPushButton,
     QComboBox,
+    QTableWidget,
 )
 
 from button import DigitButton
@@ -40,6 +41,16 @@ class MainWindow(QMainWindow):
         self.experiment_choices_box.setFixedWidth(150)
         self.experiment_choices_box.move(50, 10)
         self.experiment_choices_box.addItems(self.experiments.keys())
+
+        self.statistics_table = QTableWidget(self)
+        self.statistics_table.setColumnCount(3)
+        self.statistics_table.setRowCount(0)
+        self.statistics_table.move(400, 50)
+        self.statistics_table.setFixedWidth(300)
+        self.statistics_table.setFixedHeight(200)
+        self.statistics_table.setHorizontalHeaderLabels(['№', 'Время реакции', 'Результат'])
+        for i in range(3):
+            self.statistics_table.setColumnWidth(i, 100)
 
     def init_experiments(self):
         self.numpad = Numpad(self)
