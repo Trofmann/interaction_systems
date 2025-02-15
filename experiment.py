@@ -1,4 +1,5 @@
 import random
+import time
 from enum import Enum
 
 from PyQt5.QtCore import QThread
@@ -51,6 +52,7 @@ class Experiment(QThread):
             # Нажали верно
             # Отключаем выделение
             self.available_buttons[self.chosen_button].unhighlight()
+            time.sleep(0.3)
             # Сбрасываем выбранную кнопку
             self.chosen_button = None
             # Изменяем состояние
