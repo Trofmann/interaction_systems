@@ -1,4 +1,5 @@
 import sys
+import time
 
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
@@ -63,6 +64,8 @@ class MainWindow(QMainWindow):
             self.experiment = self._extract_experiment()
         else:
             self.experiment.terminate()
+            # Чтоб поток успел остановиться
+            time.sleep(0.3)
             self.experiment = None
         self.experiment = self._extract_experiment()
         self.experiment.start()
