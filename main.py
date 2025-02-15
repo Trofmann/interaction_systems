@@ -83,7 +83,7 @@ class MainWindow(QMainWindow):
         self.experiment.button_chosen.connect(self.highlight_key)
 
     def highlight_key(self, button: DigitButton):
-        print(button)
+        print(f'Подсвечена кнопка {button}')
 
     def keyPressEvent(self, event) -> None:
         button = DigitButton(value=event.key(), is_numpad=bool(event.modifiers() & Qt.KeypadModifier))
