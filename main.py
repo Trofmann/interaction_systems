@@ -32,7 +32,7 @@ class MainWindow(QMainWindow):
         self.init_experiments()
         self.setup_ui()
         self.show()
-        self.experiment = None
+        self.experiment: Experiment | None = None
 
     def setup_ui(self):
         self.setWindowTitle('Lab1')
@@ -53,6 +53,13 @@ class MainWindow(QMainWindow):
         self.start_experiment_button.setFixedWidth(200)
         self.start_experiment_button.setToolTip('Начать эксперимент')
         self.start_experiment_button.clicked.connect(self.setup_experiment)
+
+        # Кнопка отрисовки графика
+        self.draw_chart_button = QPushButton('График', self)
+        self.draw_chart_button.move(600, 10)
+        self.draw_chart_button.setFixedWidth(200)
+        self.draw_chart_button.setToolTip('График')
+        self.draw_chart_button.clicked.connect(self.redraw_chart)
 
         # Поле выбора эксперимента
         self.experiment_choices_box = QComboBox(self)
@@ -135,15 +142,16 @@ class MainWindow(QMainWindow):
             for col, value in enumerate(row_data):
                 self.statistics_table.setItem(row, col, QTableWidgetItem(value))
 
-        # # Обновление графика
-        # self.ax.clear()  # Очищаем предыдущий график
-        # if statistics_records:
-        #     reaction_times = [record.reaction_time for record in statistics_records]
-        #     self.ax.plot(reaction_times, marker='o', linestyle='-', color='b')
-        #     self.ax.set_title('Время реакции')
-        #     self.ax.set_xlabel('Попытка')
-        #     self.ax.set_ylabel('Время (мс)')
-        #     self.canvas.draw_idle()  # Перерисовываем canvas
+    def redraw_chart(self):
+        """Обновление графика"""
+        self.ax.clear()  # Очищаем предыдущий график
+        if self.experiment is not None and self.experiment.statistics_storage.records:
+            reaction_times = [record.reaction_time for record in self.experiment.statistics_storage.records]
+            self.ax.plot(reaction_times, marker='o', linestyle='-', color='b')
+            self.ax.set_title('Время реакции')
+            self.ax.set_xlabel('Попытка')
+            self.ax.set_ylabel('Время (мс)')
+            self.canvas.draw()  # Перерисовываем canvas
 
 
 if __name__ == '__main__':

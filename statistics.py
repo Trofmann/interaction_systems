@@ -47,5 +47,9 @@ class StatisticsStorage(QObject):
         self._records = []
         self._emit_signal()
 
+    @property
+    def records(self) -> list['StatisticsRecord']:
+        return self._records
+
     def __len__(self):
         return len(self._records)
