@@ -10,6 +10,9 @@ from PyQt5.QtWidgets import (
     QComboBox,
     QTableWidget,
     QTableWidgetItem,
+    QWidget,
+    QVBoxLayout,
+    QHBoxLayout,
 )
 
 from button import DigitButton
@@ -19,6 +22,8 @@ from keyboard import (
     Numpad,
 )
 from statistics import StatisticsRecord
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
 
 class MainWindow(QMainWindow):
@@ -33,22 +38,34 @@ class MainWindow(QMainWindow):
         self.setWindowTitle('Lab1')
         self.setGeometry(500, 300, 800, 700)
 
-        # region Кнопка начала эксперимента
+        # Главный виджет и layout
+        self.main_widget = QWidget(self)
+        self.setCentralWidget(self.main_widget)
+        self.layout = QVBoxLayout(self.main_widget)
+
+        self.top_panel = QWidget(self)
+        self.top_panel_layout = QHBoxLayout(self.top_panel)
+        self.layout.addWidget(self.top_panel)
+
+        # Кнопка начала эксперимента
         self.start_experiment_button = QPushButton('Начать эксперимент', self)
         self.start_experiment_button.move(400, 10)
         self.start_experiment_button.setFixedWidth(200)
         self.start_experiment_button.setToolTip('Начать эксперимент')
         self.start_experiment_button.clicked.connect(self.setup_experiment)
-        # endregion
 
-        # region Поле выбора эксперимента
+        # Поле выбора эксперимента
         self.experiment_choices_box = QComboBox(self)
         self.experiment_choices_box.setFixedWidth(150)
         self.experiment_choices_box.move(50, 10)
         self.experiment_choices_box.addItems(self.experiments.keys())
-        # endregion
 
-        # region
+        # Панель для таблицы и графика
+        self.bottom_panel = QWidget(self)
+        self.bottom_panel_layout = QHBoxLayout(self.bottom_panel)
+        self.layout.addWidget(self.bottom_panel)
+
+        # Таблица статистики
         self.statistics_table = QTableWidget(self)
         self.statistics_table.setColumnCount(2)
         self.statistics_table.setRowCount(0)
@@ -58,7 +75,13 @@ class MainWindow(QMainWindow):
         self.statistics_table.setHorizontalHeaderLabels(['Время реакции', 'Результат'])
         for i in range(2):
             self.statistics_table.setColumnWidth(i, 100)
-        # endregion
+
+        # График
+        self.figure, self.ax = plt.subplots(figsize=(2, 1))
+        self.canvas = FigureCanvas(self.figure)
+        self.canvas.setFixedWidth(300)  # Устанавливаем ширину canvas
+        self.canvas.setFixedHeight(200)  # Устанавливаем высоту canvas
+        self.bottom_panel_layout.addWidget(self.canvas)
 
     def init_experiments(self):
         self.numpad = Numpad(self)
@@ -102,6 +125,7 @@ class MainWindow(QMainWindow):
         self.experiment.check_button(button=button)
 
     def redraw_statistics(self, statistics_records: list[StatisticsRecord]):
+        # Обновление таблицы
         self.statistics_table.setRowCount(len(statistics_records))
         for row, record in enumerate(statistics_records):
             row_data = [
@@ -110,6 +134,16 @@ class MainWindow(QMainWindow):
             ]
             for col, value in enumerate(row_data):
                 self.statistics_table.setItem(row, col, QTableWidgetItem(value))
+
+        # # Обновление графика
+        # self.ax.clear()  # Очищаем предыдущий график
+        # if statistics_records:
+        #     reaction_times = [record.reaction_time for record in statistics_records]
+        #     self.ax.plot(reaction_times, marker='o', linestyle='-', color='b')
+        #     self.ax.set_title('Время реакции')
+        #     self.ax.set_xlabel('Попытка')
+        #     self.ax.set_ylabel('Время (мс)')
+        #     self.canvas.draw_idle()  # Перерисовываем canvas
 
 
 if __name__ == '__main__':
