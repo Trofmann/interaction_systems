@@ -24,10 +24,16 @@ class ExperimentState(Enum):
 
 
 class Experiment(QThread):
-    def __init__(self, button_sets: tuple[ButtonsSet, ...], description: str, attempts_count: int):
+    def __init__(
+            self,
+            button_sets: tuple[ButtonsSet, ...],
+            description: str, attempts_count: int,
+            is_random_button: bool = True
+    ):
         super().__init__()
         self.attempts_count = attempts_count
         self.description = description
+        self.is_random_button = is_random_button
 
         self._state = ExperimentState.NOT_ACTIVE
 
@@ -47,8 +53,21 @@ class Experiment(QThread):
 
     def _chose_button(self):
         """Выбор кнопки"""
-        button, button_label = random.choice(list(self._available_buttons.items()))  # type: DigitButton, ButtonLabel
+        if self.is_random_button:
+            button, button_label = random.choice(
+                list(self._available_buttons.items())
+            )  # type: DigitButton, ButtonLabel
+        else:
+            if self._chosen_button is None:
+                button, button_label = random.choice(
+                    list(self._available_buttons.items())
+                )  # type: DigitButton, ButtonLabel
+            else:
+                button_label = self._available_buttons[self._chosen_button]
+                button = self._chosen_button
         self._chosen_button = button
+        if not self.is_random_button:
+            time.sleep(random.randint(1, 3))
         button_label.highlight()
         # Запомним, когда выбрали кнопку
         self._button_chose_time = time.time()
@@ -75,7 +94,8 @@ class Experiment(QThread):
                 )
             )
             # Сбрасываем выбранную кнопку
-            self._chosen_button = None
+            if self.is_random_button:
+                self._chosen_button = None
             self._button_chose_time = None
             # Изменяем состояние
             if len(self.statistics_storage) == self.attempts_count:

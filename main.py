@@ -95,10 +95,22 @@ class MainWindow(QMainWindow):
         self.keyboard = KeyBoard(self)
 
         self.experiments = OrderedDict()
+        self.experiments['Клавиатура (1 клавиша)'] = Experiment(
+            button_sets=(self.keyboard,),
+            description='Клавиатура (1 клавиша)',
+            attempts_count=10,
+            is_random_button=False,
+        )
         self.experiments['Клавиатура'] = Experiment(
             button_sets=(self.keyboard,),
             description='Клавиатура',
             attempts_count=10,
+        )
+        self.experiments['Нумпад (1 клавиша)'] = Experiment(
+            button_sets=(self.numpad,),
+            description='Нумпад (1 клавиша)',
+            attempts_count=10,
+            is_random_button=False,
         )
         self.experiments['Нумпад'] = Experiment(
             button_sets=(self.numpad,),
