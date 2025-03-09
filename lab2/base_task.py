@@ -130,7 +130,7 @@ class BaseTask(ABC):
                     button_pressed_time=button_pressed_time,
                 ),
                 fitts_record=FittsRecord(
-                    button_position=ButtonSettings.POSITION,
+                    button_position=ButtonSettings.get_center_position(),
                     cursor_position=self._cursor_position,
                 )
             ))

@@ -16,8 +16,8 @@ class FittsRecord:
         self.button_position = button_position
         self.cursor_position = cursor_position
 
-        self.hardware_start_time: float = 0  # a
-        self.hardware_speed: float = 1  # b
+        self.hardware_start_time: float = 50 // 1000  # a
+        self.hardware_speed: float = 1.5  # b
         self.button_width = ButtonSettings.WIDTH  # W
 
     @property

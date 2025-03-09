@@ -13,6 +13,10 @@ class ButtonSettings:
     WIDTH = 100
     HEIGHT = 30
 
+    @classmethod
+    def get_center_position(cls) -> Position:
+        return Position(cls.POSITION.x + cls.WIDTH // 2, cls.POSITION.y + cls.HEIGHT // 2)
+
 
 class TextAreaSettings:
     POSITION = Position(200, 200)
