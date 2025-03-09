@@ -96,20 +96,29 @@ class BaseTask(ABC):
         button_pressed_time = time.time()
         if self.state not in {State.NOT_STARTED, State.WAITING_FOR_BUTTON_PRESS}:
             # Обрабатываем нажатие только если ещё не начали, или ожидаем нажатие кнопки
-            return None
+            return
         if self.state == State.WAITING_FOR_BUTTON_PRESS:
             # Ожидали нажатия кнопки
             self.statistics_storage.add_record(StatisticsRecord(
                 pos_chose_time=self._position_chose_time,
                 button_pressed_time=button_pressed_time,
             ))
+            if len(self.statistics_storage) == 10:
+                # Эксперимент завершён
+                self.state = State.COMPLETED
+                print('COMPLETED')
+                return
 
         # Ожидаем случайное время
+        self.state = State.WAITING_FOR_POSITION_SELECTION
         time.sleep(random.randint(1, 300) / 100)
         # Перемещаем курсор
         self._move_cursor(hwnd)
         # Запоминаем время, когда переместили курсор
         self._position_chose_time = time.time()
+
+        # Позиция выбрана, ожидаем нажатия
+        self.state = State.WAITING_FOR_BUTTON_PRESS
 
     # Функция для перемещения курсора в случайное место внутри окна
     def _move_cursor(self, hwnd):
