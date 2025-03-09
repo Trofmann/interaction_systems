@@ -1,3 +1,6 @@
+from position import Position
+
+
 class WindowSettings:
     HEIGHT = 400
     WIDTH = 600
@@ -6,7 +9,6 @@ class WindowSettings:
 
 class ButtonSettings:
     TITLE = 'Кнопка'
-    POS_X = 80
-    POS_Y = 150
+    POSITION = Position(80, 150)
     WIDTH = 100
     HEIGHT = 30

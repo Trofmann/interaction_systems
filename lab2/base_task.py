@@ -1,5 +1,8 @@
 import time
-from abc import ABC, abstractmethod
+from abc import (
+    ABC,
+    abstractmethod,
+)
 from enum import Enum
 import random
 import win32api
@@ -12,7 +15,10 @@ from settings import (
 from statistics_storage import (
     StatisticsStorage,
     StatisticsRecord,
+    FittsRecord,
+    TimeRecord,
 )
+from position import Position
 
 __all__ = [
     'BaseTask'
@@ -50,8 +56,8 @@ class BaseTask(ABC):
             'BUTTON',
             ButtonSettings.TITLE,
             win32con.WS_CHILD | win32con.WS_VISIBLE | win32con.BS_PUSHBUTTON,
-            ButtonSettings.POS_X,
-            ButtonSettings.POS_Y,
+            ButtonSettings.POSITION.x,
+            ButtonSettings.POSITION.y,
             ButtonSettings.WIDTH,
             ButtonSettings.HEIGHT,
             self.hwnd,
@@ -62,6 +68,7 @@ class BaseTask(ABC):
 
         self.state: State = State.NOT_STARTED
         self._position_chose_time: float | None = None  # Время выбора позиции курсора
+        self._cursor_position: Position | None = None  # Позиция курсора
         self.statistics_storage: StatisticsStorage = StatisticsStorage()
 
     def _init_window_class(self):
@@ -99,9 +106,16 @@ class BaseTask(ABC):
             return
         if self.state == State.WAITING_FOR_BUTTON_PRESS:
             # Ожидали нажатия кнопки
+            # Запоминаем статистические данные
             self.statistics_storage.add_record(StatisticsRecord(
-                pos_chose_time=self._position_chose_time,
-                button_pressed_time=button_pressed_time,
+                time_record=TimeRecord(
+                    pos_chose_time=self._position_chose_time,
+                    button_pressed_time=button_pressed_time,
+                ),
+                fitts_record=FittsRecord(
+                    button_position=ButtonSettings.POSITION,
+                    cursor_position=self._cursor_position,
+                )
             ))
             if len(self.statistics_storage) == 10:
                 # Эксперимент завершён
@@ -126,8 +140,10 @@ class BaseTask(ABC):
         rect = win32gui.GetWindowRect(hwnd)
         x = self._get_cursor_x(*rect)
         y = self._get_cursor_y(*rect)
+        # Запоминаем позицию курсора
+        self.cursor_position = Position(x, y)
         # Переместить курсор
-        win32api.SetCursorPos((x, y))
+        win32api.SetCursorPos((self.cursor_position.x, self.cursor_position.y))
 
     def run(self):
         """Запуск лабораторной работы"""
