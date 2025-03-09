@@ -55,7 +55,9 @@ class BaseTask(ABC):
             self.wc.hInstance,
             None
         )
-        self.state = State.NOT_STARTED
+
+        self.state: State = State.NOT_STARTED
+        self._position_chose_time: float | None = None  # Время выбора позиции курсора
 
     def _init_window_class(self):
         """Инициализация класса окна"""
@@ -85,12 +87,20 @@ class BaseTask(ABC):
 
     def _process_button_pressed(self, hwnd) -> None:
         """Обработка нажатия кнопки мыши"""
+        # Сразу запомним время нажатия кнопки
+        button_pressed_time = time.time()
         if self.state not in {State.NOT_STARTED, State.WAITING_FOR_BUTTON_PRESS}:
             # Обрабатываем нажатие только если ещё не начали, или ожидаем нажатие кнопки
             return None
+        if self.state == State.WAITING_FOR_BUTTON_PRESS:
+            # Ожидали нажатия кнопки
+            ...
         # Ожидаем случайное время
         time.sleep(random.randint(1, 300) / 100)
+        # Перемещаем курсор
         self._move_cursor(hwnd)
+        # Запоминаем время, когда переместили курсор
+        self._position_chose_time = time.time()
 
     # Функция для перемещения курсора в случайное место внутри окна
     def _move_cursor(self, hwnd):
