@@ -1,7 +1,20 @@
 __all__ = [
+    'FittsRecord',
     'StatisticsRecord',
     'StatisticsStorage',
 ]
+
+
+class FittsRecord:
+    def __init__(self, button_x: int, button_y: int, cursor_x: int, cursor_y: int):
+        self.button_x = button_x
+        self.button_y = button_y
+        self.cursor_x = cursor_x
+        self.cursor_y = cursor_y
+
+    @property
+    def reaction_time(self):
+        raise NotImplementedError()
 
 
 class StatisticsRecord:
