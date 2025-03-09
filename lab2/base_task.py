@@ -132,11 +132,13 @@ class BaseTask(ABC):
                     cursor_position=self._cursor_position,
                 )
             ))
+            win32gui.SetWindowText(self.text_area_hwnd, str(self.statistics_storage))
             if len(self.statistics_storage) == 10:
                 # Эксперимент завершён
                 self.state = State.COMPLETED
-                print('COMPLETED')
+                win32gui.SetWindowText(self.text_area_hwnd, f'{str(self.statistics_storage)}\r\nЗавершено',)
                 return
+            win32gui.SetWindowText(self.text_area_hwnd, str(self.statistics_storage))
 
         # Ожидаем случайное время
         self.state = State.WAITING_FOR_POSITION_SELECTION

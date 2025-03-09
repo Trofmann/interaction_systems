@@ -33,6 +33,11 @@ class StatisticsRecord:
         self.time_record = time_record
         self.fitts_record = fitts_record
 
+    def __str__(self):
+        fitts = f'Фиттс: {round(self.fitts_record.reaction_time, 2)}'
+        real_time = f'Реальное время: {round(self.time_record.reaction_time, 2)}'
+        return f'{fitts}; {real_time}'
+
 
 class StatisticsStorage:
     def __init__(self):
@@ -40,8 +45,6 @@ class StatisticsStorage:
 
     def add_record(self, record: StatisticsRecord):
         self._records.append(record)
-        print(record.time_record.reaction_time)
-        print(record.fitts_record.reaction_time)
 
     @property
     def records(self) -> list[StatisticsRecord]:
@@ -49,3 +52,6 @@ class StatisticsStorage:
 
     def __len__(self) -> int:
         return len(self._records)
+
+    def __str__(self):
+        return '\r\n'.join(map(str, self._records))
