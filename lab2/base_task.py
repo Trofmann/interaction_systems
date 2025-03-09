@@ -59,7 +59,7 @@ class BaseTask(ABC):
         """Обработка нажатия кнопки"""
         if msg == win32con.WM_COMMAND:
             if wParam == 1:  # ID кнопки
-                self._move_cursor(hwnd)
+                self._process_button_pressed(hwnd)
         elif msg == win32con.WM_DESTROY:
             win32gui.PostQuitMessage(0)
         return win32gui.DefWindowProc(hwnd, msg, wParam, lParam)
@@ -71,6 +71,10 @@ class BaseTask(ABC):
     @abstractmethod
     def _get_cursor_y(self, left, top, right, bottom):
         """Получение координаты y курсора"""
+
+    def _process_button_pressed(self, hwnd):
+        """Обработка нажатия кнопки мыши"""
+        self._move_cursor(hwnd)
 
     # Функция для перемещения курсора в случайное место внутри окна
     def _move_cursor(self, hwnd):
