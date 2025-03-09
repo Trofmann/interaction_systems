@@ -1,6 +1,7 @@
+import time
 from abc import ABC, abstractmethod
 from enum import Enum
-
+import random
 import win32api
 import win32gui
 import win32con
@@ -87,6 +88,8 @@ class BaseTask(ABC):
         if self.state not in {State.NOT_STARTED, State.WAITING_FOR_BUTTON_PRESS}:
             # Обрабатываем нажатие только если ещё не начали, или ожидаем нажатие кнопки
             return None
+        # Ожидаем случайное время
+        time.sleep(random.randint(1, 300) / 100)
         self._move_cursor(hwnd)
 
     # Функция для перемещения курсора в случайное место внутри окна
