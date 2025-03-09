@@ -20,6 +20,7 @@ class StatisticsStorage:
 
     def add_record(self, record: StatisticsRecord):
         self._records.append(record)
+        print(record.reaction_time)
 
     @property
     def records(self) -> list[StatisticsRecord]:

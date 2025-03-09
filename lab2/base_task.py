@@ -9,6 +9,10 @@ from settings import (
     WindowSettings,
     ButtonSettings,
 )
+from statistics_storage import (
+    StatisticsStorage,
+    StatisticsRecord,
+)
 
 __all__ = [
     'BaseTask'
@@ -58,6 +62,7 @@ class BaseTask(ABC):
 
         self.state: State = State.NOT_STARTED
         self._position_chose_time: float | None = None  # Время выбора позиции курсора
+        self.statistics_storage: StatisticsStorage = StatisticsStorage()
 
     def _init_window_class(self):
         """Инициализация класса окна"""
@@ -94,7 +99,11 @@ class BaseTask(ABC):
             return None
         if self.state == State.WAITING_FOR_BUTTON_PRESS:
             # Ожидали нажатия кнопки
-            ...
+            self.statistics_storage.add_record(StatisticsRecord(
+                pos_chose_time=self._position_chose_time,
+                button_pressed_time=button_pressed_time,
+            ))
+
         # Ожидаем случайное время
         time.sleep(random.randint(1, 300) / 100)
         # Перемещаем курсор
