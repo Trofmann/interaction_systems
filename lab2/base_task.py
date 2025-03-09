@@ -1,13 +1,16 @@
+import random
 import time
 from abc import (
     ABC,
     abstractmethod,
 )
 from enum import Enum
-import random
+
 import win32api
-import win32gui
 import win32con
+import win32gui
+
+from position import Position
 from settings import (
     WindowSettings,
     ButtonSettings,
@@ -19,7 +22,6 @@ from statistics_storage import (
     FittsRecord,
     TimeRecord,
 )
-from position import Position
 
 __all__ = [
     'BaseTask'
@@ -136,7 +138,7 @@ class BaseTask(ABC):
             if len(self.statistics_storage) == 10:
                 # Эксперимент завершён
                 self.state = State.COMPLETED
-                win32gui.SetWindowText(self.text_area_hwnd, f'{str(self.statistics_storage)}\r\nЗавершено',)
+                win32gui.SetWindowText(self.text_area_hwnd, f'{str(self.statistics_storage)}\r\nЗавершено', )
                 return
             win32gui.SetWindowText(self.text_area_hwnd, str(self.statistics_storage))
 
@@ -158,9 +160,9 @@ class BaseTask(ABC):
         x = self._get_cursor_x(*rect)
         y = self._get_cursor_y(*rect)
         # Запоминаем позицию курсора
-        self.cursor_position = Position(x, y)
+        self._cursor_position = Position(x, y)
         # Переместить курсор
-        win32api.SetCursorPos((self.cursor_position.x, self.cursor_position.y))
+        win32api.SetCursorPos((self._cursor_position.x, self._cursor_position.y))
 
     def run(self):
         """Запуск лабораторной работы"""

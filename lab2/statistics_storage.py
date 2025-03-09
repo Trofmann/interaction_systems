@@ -1,4 +1,7 @@
+import math
+
 from position import Position
+from settings import ButtonSettings
 
 __all__ = [
     'FittsRecord',
@@ -13,9 +16,31 @@ class FittsRecord:
         self.button_position = button_position
         self.cursor_position = cursor_position
 
+        self.hardware_start_time: float = 0  # a
+        self.hardware_speed: float = 1  # b
+        self.button_width = ButtonSettings.WIDTH  # W
+
     @property
-    def reaction_time(self):
-        return 0
+    def _distance(self) -> float:
+        # D
+        return math.sqrt(
+            (self.button_position.x - self.cursor_position.x) ** 2
+            + (self.button_position.y - self.cursor_position.y) ** 2
+        )
+
+    @property
+    def reaction_time(self) -> float:
+        # a + blog2(D/W + 1)
+        return (
+                self.hardware_start_time
+                + self.hardware_speed
+                * (
+                    math.log(
+                        ((self._distance / self.button_width) + 1),
+                        2
+                    )
+                )
+        )
 
 
 class TimeRecord:
