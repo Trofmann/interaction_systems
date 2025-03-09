@@ -21,7 +21,7 @@ from keyboard import (
     KeyBoard,
     Numpad,
 )
-from statistics import StatisticsRecord
+from lab1.statistics import StatisticsRecord
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 

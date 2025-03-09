@@ -9,7 +9,7 @@ from keyboard import (
     ButtonsSet,
     ButtonLabel,
 )
-from statistics import (
+from lab1.statistics import (
     StatisticsRecord,
     StatisticsStorage,
 )
