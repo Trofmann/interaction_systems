@@ -1,4 +1,6 @@
 from abc import ABC, abstractmethod
+from enum import Enum
+
 import win32api
 import win32gui
 import win32con
@@ -10,6 +12,13 @@ from settings import (
 __all__ = [
     'BaseTask'
 ]
+
+
+class State(Enum):
+    NOT_STARTED = -1
+    WAITING_FOR_POSITION_SELECTION = 0
+    WAITING_FOR_BUTTON_PRESS = 1
+    COMPLETED = 2
 
 
 class BaseTask(ABC):
@@ -45,6 +54,7 @@ class BaseTask(ABC):
             self.wc.hInstance,
             None
         )
+        self.state = State.NOT_STARTED
 
     def _init_window_class(self):
         """Инициализация класса окна"""
@@ -72,8 +82,11 @@ class BaseTask(ABC):
     def _get_cursor_y(self, left, top, right, bottom):
         """Получение координаты y курсора"""
 
-    def _process_button_pressed(self, hwnd):
+    def _process_button_pressed(self, hwnd) -> None:
         """Обработка нажатия кнопки мыши"""
+        if self.state not in {State.NOT_STARTED, State.WAITING_FOR_BUTTON_PRESS}:
+            # Обрабатываем нажатие только если ещё не начали, или ожидаем нажатие кнопки
+            return None
         self._move_cursor(hwnd)
 
     # Функция для перемещения курсора в случайное место внутри окна
