@@ -12,3 +12,9 @@ class ButtonSettings:
     POSITION = Position(80, 150)
     WIDTH = 100
     HEIGHT = 30
+
+
+class TextAreaSettings:
+    POSITION = Position(200, 200)
+    WIDTH = 360
+    HEIGHT = 150

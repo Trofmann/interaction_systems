@@ -11,6 +11,7 @@ import win32con
 from settings import (
     WindowSettings,
     ButtonSettings,
+    TextAreaSettings,
 )
 from statistics_storage import (
     StatisticsStorage,
@@ -62,6 +63,20 @@ class BaseTask(ABC):
             ButtonSettings.HEIGHT,
             self.hwnd,
             1,  # ID кнопки
+            self.wc.hInstance,
+            None
+        )
+
+        self.text_area_hwnd = win32gui.CreateWindow(
+            "EDIT",  # Класс элемента Edit
+            "",  # Начальный текст
+            win32con.WS_CHILD | win32con.WS_VISIBLE | win32con.WS_VSCROLL | win32con.ES_MULTILINE | win32con.ES_READONLY,
+            TextAreaSettings.POSITION.x,
+            TextAreaSettings.POSITION.y,
+            TextAreaSettings.WIDTH,
+            TextAreaSettings.HEIGHT,
+            self.hwnd,
+            2,  # ID текстовой области
             self.wc.hInstance,
             None
         )
