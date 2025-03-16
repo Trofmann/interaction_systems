@@ -28,7 +28,7 @@ class MenuItem:
     @property
     def full_code(self) -> str:
         if self.parent:
-            return f'{self.parent.full_code}'
+            return f'{self.parent.full_code}.{self.code}'
         return self.code
 
     @property
