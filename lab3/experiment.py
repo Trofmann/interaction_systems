@@ -25,7 +25,7 @@ class ExperimentState(Enum):
 
 
 class Experiment(QThread):
-    def __init__(self):
+    def __init__(self, max_attempts_count: int = 10):
         super().__init__()
         # Все доступные для выбора действия
         self._actions: list[MenuItem] = menu_actions
@@ -37,6 +37,8 @@ class Experiment(QThread):
         self._action_choice_time: float | None = None
         # Статистика
         self.statistics_storage: StatisticsStorage = StatisticsStorage()
+        # Максимальное число попыток
+        self._max_attempts_count = max_attempts_count
 
     def run(self):
         while True:
@@ -78,4 +80,7 @@ class Experiment(QThread):
         self._action_choice_time = None
 
         # Перевод в следующее состояние
-        self._state = ExperimentState.WAIT_FOR_ACTION_CHOICE
+        if len(self.statistics_storage) == self._max_attempts_count:
+            self._state = ExperimentState.COMPLETED
+        else:
+            self._state = ExperimentState.WAIT_FOR_ACTION_CHOICE
