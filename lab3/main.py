@@ -1,15 +1,50 @@
-from PyQt5.QtWidgets import QMainWindow, QApplication
+from PyQt5.QtWidgets import (
+    QMainWindow,
+    QApplication,
+    QMenu,
+    QAction,
+    QMenuBar,
+)
 import sys
+from menu import (
+    menubar_description,
+    MenuItem,
+)
 
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setup_ui()
+        self._create_menu()
 
     def setup_ui(self):
         self.setWindowTitle('Lab3')
         self.setGeometry(500, 300, 800, 700)
+
+    def _create_menu(self):
+        menubar = self.menuBar()
+
+        for menubar_item_descr in menubar_description.values():
+            self._create_menu_items(parent=menubar, description=menubar_item_descr)
+
+    def _create_menu_items(self, parent: QMenuBar | QAction | QMenu, description: MenuItem):
+        if description.is_action:
+            action = QAction(description.label, self)
+            action.setData(description.full_code)
+            action.triggered.connect(self._handle_action)
+            parent.addAction(action)
+        else:
+            # Есть дочерние элементы, значит это меню
+            menu_item = parent.addMenu(description.label)
+            for child in description.children:
+                self._create_menu_items(menu_item, child)
+
+    def _handle_action(self):
+        action = self.sender()
+
+        action_data: str = action.data()
+        print(action_data)
 
 
 if __name__ == '__main__':

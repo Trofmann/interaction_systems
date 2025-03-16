@@ -37,6 +37,10 @@ class MenuItem:
             return f'{self.parent.full_path}->{self.label}'
         return self.label
 
+    @property
+    def is_action(self) -> bool:
+        return not self.children
+
 
 menubar_description: OrderedDict[str, MenuItem] = OrderedDict()
 menubar_description['file'] = MenuItem(
