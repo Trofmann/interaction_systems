@@ -3,7 +3,7 @@ from typing import Self
 
 __all__ = [
     'MenuItem',
-    'menu_description',
+    'menubar_description',
 ]
 
 
