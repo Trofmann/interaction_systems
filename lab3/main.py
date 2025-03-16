@@ -52,7 +52,7 @@ class MainWindow(QMainWindow):
         action = self.sender()
 
         action_data: str = action.data()
-        print(action_data)
+        self.experiment.check_action(action_data)
 
 
 if __name__ == '__main__':

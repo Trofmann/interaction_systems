@@ -35,7 +35,7 @@ class Experiment(QThread):
             if self._state == ExperimentState.WAIT_FOR_ACTION_CHOICE:
                 self._chose_action()
 
-    def _chose_action(self):
+    def _chose_action(self) -> None:
         self._chosen_action = random.choice(self._actions)
         # Запомним, когда выбрали кнопку
         self._action_choice_time = time.time()
@@ -44,3 +44,21 @@ class Experiment(QThread):
         print(self._chosen_action)
         # Сразу изменяем состояние
         self._state = ExperimentState.WAIT_FOR_ACTION_PRESSED
+
+    def check_action(self, code: str) -> None:
+        # Сразу запомним время нажатия на действия
+        action_pressed_time = time.time()
+
+        # Интересует только одно состояние кнопки
+        if self._state != ExperimentState.WAIT_FOR_ACTION_PRESSED:
+            return
+        result = code == self._chosen_action.full_code
+        print(result)
+        if result:
+            # Нажали верно
+            # Сбросим выбранную кнопку и время
+            self._chosen_action = None
+            self._action_choice_time = None
+
+            # Перевод в следующее состояние
+            self._state = ExperimentState.WAIT_FOR_ACTION_CHOICE
