@@ -4,6 +4,7 @@ from typing import Self
 __all__ = [
     'MenuItem',
     'menubar_description',
+    'menu_actions',
 ]
 
 
@@ -195,3 +196,20 @@ menubar_description['help'] = MenuItem(
         )
     ],
 )
+
+menu_actions: list[MenuItem] = []
+
+
+def _collect_menu_actions() -> None:
+    queue = list(menubar_description.values())
+    while True:
+        if not queue:
+            break
+        item = queue.pop(0)
+        if item.is_action:
+            menu_actions.append(item)
+        else:
+            queue.extend(item.children)
+
+
+_collect_menu_actions()
