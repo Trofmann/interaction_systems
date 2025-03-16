@@ -15,13 +15,13 @@ __all__ = [
 class HikRecord:
     def __init__(self, count_: int):
         self.count_ = count_
-        self.a = 50 / 1000
+        self.a = 50
         self.b = 100
 
     @property
     def reaction_time(self) -> float:
         # a + blog2(n+1)
-        return self.a + self.b * math.log(self.count_ + 1, 2)
+        return (self.a + self.b * math.log(self.count_ + 1, 2)) / 100
 
 
 class TimeRecord:
