@@ -1,7 +1,7 @@
 from enum import Enum
 import random
 import time
-from PyQt5.QtCore import QThread
+from PyQt5.QtCore import QThread, pyqtSignal
 from menu import (
     menu_actions,
     MenuItem,
@@ -25,6 +25,8 @@ class ExperimentState(Enum):
 
 
 class Experiment(QThread):
+    task_changed = pyqtSignal(str)
+
     def __init__(self, max_attempts_count: int = 10):
         super().__init__()
         # Все доступные для выбора действия
@@ -51,7 +53,7 @@ class Experiment(QThread):
         self._action_choice_time = time.time()
 
         # TODO: Отправлять сигнал на ui, для отрисовки сообщения
-        print(self._chosen_action)
+        self.task_changed.emit(str(self._chosen_action))
         # Сразу изменяем состояние
         self._state = ExperimentState.WAIT_FOR_ACTION_PRESSED
 
@@ -82,5 +84,6 @@ class Experiment(QThread):
         # Перевод в следующее состояние
         if len(self.statistics_storage) == self._max_attempts_count:
             self._state = ExperimentState.COMPLETED
+            self.task_changed.emit('Завершено')
         else:
             self._state = ExperimentState.WAIT_FOR_ACTION_CHOICE
