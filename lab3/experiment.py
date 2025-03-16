@@ -52,7 +52,6 @@ class Experiment(QThread):
         # Запомним, когда выбрали кнопку
         self._action_choice_time = time.time()
 
-        # TODO: Отправлять сигнал на ui, для отрисовки сообщения
         self.task_changed.emit(str(self._chosen_action))
         # Сразу изменяем состояние
         self._state = ExperimentState.WAIT_FOR_ACTION_PRESSED
