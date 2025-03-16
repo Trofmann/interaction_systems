@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import (
     QApplication,
     QMenu,
     QAction,
-    QMenuBar,
+    QMenuBar, QTextEdit,
 )
 
 from statistics_storage import StatisticsRecord
@@ -22,6 +22,7 @@ class MainWindow(QMainWindow):
         self.setup_ui()
         self._create_menu()
         self._init_experiment()
+        self._init_statistics_text_area()
 
     def setup_ui(self):
         self.setWindowTitle('Lab3')
@@ -31,6 +32,13 @@ class MainWindow(QMainWindow):
         self.experiment = Experiment()
         self.experiment.start()
         self.experiment.statistics_storage.statistics_changed.connect(self._redraw_statistics)
+
+    def _init_statistics_text_area(self):
+        self.statistics_text_area = QTextEdit(self)
+        self.statistics_text_area.setReadOnly(True)
+        self.statistics_text_area.move(300, 100)
+        self.statistics_text_area.setFixedWidth(400)
+        self.statistics_text_area.setFixedHeight(150)
 
     def _create_menu(self):
         menubar = self.menuBar()
@@ -56,8 +64,9 @@ class MainWindow(QMainWindow):
         action_data: str = action.data()
         self.experiment.check_action(action_data)
 
-    def _redraw_statistics(self, statistics_record: list[StatisticsRecord]):
-        print(statistics_record)
+    def _redraw_statistics(self, statistics_records: list[StatisticsRecord]):
+        self.statistics_text_area.clear()
+        self.statistics_text_area.setText('\n'.join(map(str, statistics_records)))
 
 
 if __name__ == '__main__':
