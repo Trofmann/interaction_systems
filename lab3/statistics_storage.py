@@ -3,6 +3,7 @@ from PyQt5.QtCore import (
     pyqtSignal,
 )
 import math
+from menu import MenuItem, menubar_description
 
 __all__ = [
     'TimeRecord',
@@ -13,15 +14,22 @@ __all__ = [
 
 
 class HikRecord:
-    def __init__(self, count_: int):
-        self.count_ = count_
+    def __init__(self, menu_item: MenuItem):
+        self.menu_item = menu_item
         self.a = 50
         self.b = 100
 
+    def _calc(self, menu_item: MenuItem) -> float:
+        if parent := menu_item.parent:
+            count_ = len(parent.children)
+            return (self.a + self.b * math.log(count_ + 1, 2)) / 1000 + self._calc(parent)
+        else:
+            count_ = len(menubar_description)
+            return (self.a + self.b * math.log(count_ + 1, 2)) / 1000
+
     @property
     def reaction_time(self) -> float:
-        # a + blog2(n+1)
-        return (self.a + self.b * math.log(self.count_ + 1, 2)) / 100
+        return self._calc(self.menu_item)
 
 
 class TimeRecord:

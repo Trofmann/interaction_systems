@@ -73,7 +73,7 @@ class Experiment(QThread):
                     chose_time=self._action_choice_time,
                     pressed_time=action_pressed_time,
                 ),
-                hik_record=HikRecord(count_=len(self._actions)),
+                hik_record=HikRecord(menu_item=self._chosen_action),
             ),
         )
         # Сбросим выбранную кнопку и время
