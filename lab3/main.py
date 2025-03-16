@@ -45,7 +45,7 @@ class MainWindow(QMainWindow):
     def _init_task_text_area(self):
         self.task_text_area = QTextEdit(self)
         self.task_text_area.setReadOnly(True)
-        self.task_text_area.move(50, 100)
+        self.task_text_area.move(300, 300)
         self.task_text_area.setFixedWidth(200)
 
     def _create_menu(self):
