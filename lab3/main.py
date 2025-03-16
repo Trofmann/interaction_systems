@@ -1,3 +1,5 @@
+import sys
+
 from PyQt5.QtWidgets import (
     QMainWindow,
     QApplication,
@@ -5,10 +7,10 @@ from PyQt5.QtWidgets import (
     QAction,
     QMenuBar,
 )
-import sys
+
 from menu import (
     menubar_description,
-    MenuItem,
+    MenuItem
 )
 
 
