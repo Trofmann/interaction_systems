@@ -8,6 +8,7 @@ from PyQt5.QtWidgets import (
     QMenuBar,
 )
 
+from statistics_storage import StatisticsRecord
 from menu import (
     menubar_description,
     MenuItem
@@ -29,6 +30,7 @@ class MainWindow(QMainWindow):
     def _init_experiment(self):
         self.experiment = Experiment()
         self.experiment.start()
+        self.experiment.statistics_storage.statistics_changed.connect(self._redraw_statistics)
 
     def _create_menu(self):
         menubar = self.menuBar()
@@ -53,6 +55,9 @@ class MainWindow(QMainWindow):
 
         action_data: str = action.data()
         self.experiment.check_action(action_data)
+
+    def _redraw_statistics(self, statistics_record: list[StatisticsRecord]):
+        print(statistics_record)
 
 
 if __name__ == '__main__':

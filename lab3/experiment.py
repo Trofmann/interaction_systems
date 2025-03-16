@@ -6,6 +6,12 @@ from menu import (
     menu_actions,
     MenuItem,
 )
+from statistics_storage import (
+    StatisticsStorage,
+    TimeRecord,
+    HikRecord,
+    StatisticsRecord,
+)
 
 __all__ = [
     'Experiment',
@@ -29,6 +35,8 @@ class Experiment(QThread):
         self._chosen_action: MenuItem | None = None
         # Время выбора действия
         self._action_choice_time: float | None = None
+        # Статистика
+        self.statistics_storage: StatisticsStorage = StatisticsStorage()
 
     def run(self):
         while True:
@@ -52,13 +60,22 @@ class Experiment(QThread):
         # Интересует только одно состояние кнопки
         if self._state != ExperimentState.WAIT_FOR_ACTION_PRESSED:
             return
-        result = code == self._chosen_action.full_code
-        print(result)
-        if result:
-            # Нажали верно
-            # Сбросим выбранную кнопку и время
-            self._chosen_action = None
-            self._action_choice_time = None
+        if code != self._chosen_action.full_code:
+            # Нажали неверно, не обрабатываем
+            return
+        # Нажали верно
+        self.statistics_storage.add_record(
+            StatisticsRecord(
+                time_record=TimeRecord(
+                    chose_time=self._action_choice_time,
+                    pressed_time=action_pressed_time,
+                ),
+                hik_record=HikRecord(count_=len(self._actions)),
+            ),
+        )
+        # Сбросим выбранную кнопку и время
+        self._chosen_action = None
+        self._action_choice_time = None
 
-            # Перевод в следующее состояние
-            self._state = ExperimentState.WAIT_FOR_ACTION_CHOICE
+        # Перевод в следующее состояние
+        self._state = ExperimentState.WAIT_FOR_ACTION_CHOICE
