@@ -12,6 +12,7 @@ from menu import (
     menubar_description,
     MenuItem
 )
+from experiment import Experiment
 
 
 class MainWindow(QMainWindow):
@@ -19,10 +20,15 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.setup_ui()
         self._create_menu()
+        self._init_experiment()
 
     def setup_ui(self):
         self.setWindowTitle('Lab3')
         self.setGeometry(500, 300, 800, 700)
+
+    def _init_experiment(self):
+        self.experiment = Experiment()
+        self.experiment.start()
 
     def _create_menu(self):
         menubar = self.menuBar()
