@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import (
     QTextEdit,
     QLineEdit,
 )
+from const import TEXT
 
 
 class MainWindow(QMainWindow):
@@ -25,6 +26,7 @@ class MainWindow(QMainWindow):
         self.info_text_area.move(500, 100)
         self.info_text_area.setFixedWidth(400)
         self.info_text_area.setFixedHeight(450)
+        self.info_text_area.setText(TEXT)
 
     def _init_search_input(self):
         self.search_input = QLineEdit(self)
