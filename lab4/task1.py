@@ -7,6 +7,7 @@ from PyQt5.QtWidgets import (
     QLineEdit,
 )
 from const import TEXT
+from logic import process_search
 
 
 class MainWindow(QMainWindow):
@@ -36,8 +37,8 @@ class MainWindow(QMainWindow):
         self.search_input.returnPressed.connect(self._on_search_input)
 
     def _on_search_input(self):
-        text = self.search_input.text()
-        print(text)
+        term = self.search_input.text()
+        self.info_text_area.setText(process_search(term))
 
 
 if __name__ == '__main__':
